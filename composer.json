@@ -1,0 +1,21 @@
+{
+    "name": "james/twentytwentytwo-child",
+    "type": "project",
+    "require": {
+        "symfony/var-dumper": "^5.4",
+        "nesbot/carbon": "^2.57"
+    },
+    "authors": [
+        {
+            "name": "james",
+            "email": "james.jomuad@outlook.com"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "hooks/filters.php",
+            "hooks/actions.php",
+            "hooks/shortcodes.php"
+        ]
+    }
+}
