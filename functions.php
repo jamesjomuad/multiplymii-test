@@ -74,7 +74,6 @@ function axcelerate_query($url)
 function axcelerate_certificate($enrolID)
 {
     return axcelerate_query('contact/enrolment/certificate?enrolID='.$enrolID);
-    // return axcelerate_query('contact/enrolment/certificate?enrolID='.$enrolID);
 }
 
 function axcelerate_students()

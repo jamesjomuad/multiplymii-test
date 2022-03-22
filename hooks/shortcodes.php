@@ -174,16 +174,19 @@ add_shortcode('axcelerate_organisation', function () {
 add_shortcode('axcelerate_certificate', function(){
     $id = get_query_var('certID');
 
-    $certificate = axcelerate_query('contact/enrolment/certificate?enrolID='.$id);
+    $certificate = axcelerate_query('contact/enrolment/certificate?enrolID='.$id); ?>
 
-    dump([
-        'id' => $id,
-        'cert' => $certificate
-    ]); ?>
-
-    <div class="alert alert-danger" role="alert">
-        A simple danger alert—check it out!
-    </div>
-
-    <?php
+    <?php if($certificate->ERROR) : ?>
+        <div class="alert alert-danger" role="alert">
+            <?= $certificate->MESSAGES ?>
+        </div>
+    <?php elseif($certificate==false) : ?>
+        <div class="alert alert-danger" role="alert">
+            API connection error!
+        </div>
+    <?php else : ?>
+        <?php
+            dump($certificate);
+        ?>
+    <?php endif;
 });
