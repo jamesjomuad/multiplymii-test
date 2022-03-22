@@ -10,23 +10,38 @@ use Illuminate\Support\Arr;
 #   Students
 add_shortcode('axcelerate_students', function () {
 
-    $contacts = axcelerate_students(); ?>
+    $students = axcelerate_students();
+
+    if(!$students){ ?>
+        <div class="alert alert-danger" role="alert">
+            Oops! API connection error.
+        </div><?php
+        return;
+    }
+    
+    foreach( $students as $student)
+    {
+        $student->ENROLMENTS = $student->CUSTOMFIELD_URLFIELD ? 'YES' : 'NO';
+    }
+
+    ?>
 
     <div class="row gx-4 gy-4 mt-3">
-        <?php foreach ($contacts as $contact) : ?>
+        <?php foreach ($students as $student) : ?>
             <div class="col-4">
-                <div class="card w-100">
-                    <div class="card-body">
-                        <h5 class="card-title"><?= $contact->GIVENNAME ?></h5>
-                        <p class="card-text"><?= $contact->COMMENT ?></p>
+                <div class="card w-100 shadow h-100">
+                    <div class="card-body bg-primary text-light">
+                        <h5 class="card-title"><?= $student->GIVENNAME ?></h5>
+                        <p class="card-text"><?= $student->COMMENT ?></p>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><b>ID:</b> <?= $contact->CONTACTID ?></li>
-                        <li class="list-group-item"><b>Position:</b> <?= $contact->POSITION ?></li>
-                        <li class="list-group-item"><b>Email:</b> <?= $contact->EMAILADDRESS ?></li>
+                        <li class="list-group-item"><b>ID:</b> <?= $student->CONTACTID ?></li>
+                        <li class="list-group-item"><b>Position:</b> <?= $student->POSITION ?></li>
+                        <li class="list-group-item"><b>Email:</b> <?= $student->EMAILADDRESS ?></li>
+                        <li class="list-group-item <?= ($student->ENROLMENTS=='YES') ? 'active':'' ?>"><b>Enrolments:</b> <?= $student->ENROLMENTS ?></li>
                     </ul>
                     <div class="card-body">
-                        <a href="/student/<?= $contact->CONTACTID ?>" class="btn btn-primary">View</a>
+                        <a href="/student/<?= $student->CONTACTID ?>" class="btn btn-primary">View</a>
                     </div>
                 </div>
             </div>
@@ -43,7 +58,14 @@ add_shortcode('axcelerate_student', function () {
 
     $student = axcelerate_student($student_id);
 
-?>
+    if(!$student){ ?>
+        <div class="alert alert-danger" role="alert">
+            Oops! API connection error.
+        </div><?php
+        return;
+    }
+
+    $student->ENROLMENTS = axcelerate_query('contact/enrolments/' . $student_id); ?>
 
     <div class="row gx-4 gy-4 mt-3">
         <div class="col-12 d-flex flex-fill">
@@ -53,13 +75,34 @@ add_shortcode('axcelerate_student', function () {
                     <p class="card-text"><?= $student->COMMENT ?></p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <?php foreach ($student as $key => $data) : ?>
+                    <?php foreach ($student as $key => $data) : 
+                        if(!$data){ continue; }
+                    ?>
                         <li class="list-group-item"><b><?= $key ?>:</b> <?= $data ?></li>
                     <?php endforeach; ?>
                 </ul>
             </div>
         </div>
     </div>
+
+    <?php if( $student->CUSTOMFIELD_URLFIELD ) : ?>
+        <h2 class="mt-5">Enrolments</h2>
+        <div class="row gx-4 gy-4 mt-3">
+            <?php foreach ($student->ENROLMENTS as $enrolment) : ?>
+                <div class="col-4">
+                    <div class="card w-100 shadow h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= $enrolment->NAME ?></h5>
+                            <p class="card-text"><?= $enrolment->ACTIVITYTYPE ?></p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>ID:</b> <?= $enrolment->LEARNERID ?></li>
+                        </ul>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 <?php
 });
 
