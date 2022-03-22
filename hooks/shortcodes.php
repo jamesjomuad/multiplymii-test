@@ -12,19 +12,30 @@ add_shortcode('axcelerate_students', function () {
 
     $students = axcelerate_students();
 
-    if(!$students){ ?>
+    if (!$students) { ?>
         <div class="alert alert-danger" role="alert">
             Oops! API connection error.
         </div><?php
         return;
     }
-    
-    foreach( $students as $student)
-    {
-        $student->ENROLMENTS = $student->CUSTOMFIELD_URLFIELD ? 'YES' : 'NO';
-    }
 
-    ?>
+    foreach ($students as $student) {
+        $student->ENROLMENTS = $student->CUSTOMFIELD_URLFIELD ? 'YES' : 'NO';
+    } ?>
+
+    <form action="/students">
+        <div class="row g-3 align-items-center mt-5">
+            <div class="col-auto">
+                <label class="col-form-label">Search</label>
+            </div>
+            <div class="col-auto">
+                <input type="text" class="form-control" name="keyword" value="<?= $_GET['keyword'] ?>">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">GO</button>
+            </div>
+        </div>
+    </form>
 
     <div class="row gx-4 gy-4 mt-3">
         <?php foreach ($students as $student) : ?>
@@ -38,7 +49,7 @@ add_shortcode('axcelerate_students', function () {
                         <li class="list-group-item"><b>ID:</b> <?= $student->CONTACTID ?></li>
                         <li class="list-group-item"><b>Position:</b> <?= $student->POSITION ?></li>
                         <li class="list-group-item"><b>Email:</b> <?= $student->EMAILADDRESS ?></li>
-                        <li class="list-group-item <?= ($student->ENROLMENTS=='YES') ? 'active':'' ?>"><b>Enrolments:</b> <?= $student->ENROLMENTS ?></li>
+                        <li class="list-group-item <?= ($student->ENROLMENTS == 'YES') ? 'active' : '' ?>"><b>Enrolments:</b> <?= $student->ENROLMENTS ?></li>
                     </ul>
                     <div class="card-body">
                         <a href="/student/<?= $student->CONTACTID ?>" class="btn btn-primary">View</a>
@@ -47,7 +58,7 @@ add_shortcode('axcelerate_students', function () {
             </div>
         <?php endforeach; ?>
     </div>
-<?php
+    <?php
 });
 
 
@@ -58,14 +69,14 @@ add_shortcode('axcelerate_student', function () {
 
     $student = axcelerate_student($student_id);
 
-    if(!$student){ ?>
+    if (!$student) { ?>
         <div class="alert alert-danger" role="alert">
             Oops! API connection error.
         </div><?php
-        return;
-    }
+                return;
+            }
 
-    $student->ENROLMENTS = axcelerate_query('contact/enrolments/' . $student_id); ?>
+            $student->ENROLMENTS = axcelerate_query('contact/enrolments/' . $student_id); ?>
 
     <div class="row gx-4 gy-4 mt-3">
         <div class="col-4">
@@ -75,8 +86,10 @@ add_shortcode('axcelerate_student', function () {
                     <p class="card-text"><?= $student->COMMENT ?></p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <?php foreach ($student as $key => $data) : 
-                        if(!$data){ continue; }
+                    <?php foreach ($student as $key => $data) :
+                        if (!$data) {
+                            continue;
+                        }
                     ?>
                         <li class="list-group-item"><b><?= $key ?>:</b> <?= $data ?></li>
                     <?php endforeach; ?>
@@ -84,7 +97,7 @@ add_shortcode('axcelerate_student', function () {
             </div>
         </div>
         <div class="col-8">
-            <?php if( $student->CUSTOMFIELD_URLFIELD ) : ?>
+            <?php if ($student->CUSTOMFIELD_URLFIELD) : ?>
                 <h2 class="mt-5">Enrolments & Certificates</h2>
                 <div class="row gx-3 gy-3 mt-3">
                     <?php foreach ($student->ENROLMENTS as $enrolment) : ?>
@@ -99,10 +112,10 @@ add_shortcode('axcelerate_student', function () {
                                     <li class="list-group-item"><b>Commenced Date:</b> <?= $enrolment->COMMENCEDDATE ?></li>
                                     <li class="list-group-item"><b>Status:</b> <?= $enrolment->STATUS ?></li>
                                 </ul>
-                                <?php if($enrolment->STATUS=="Completed") : ?>
-                                <div class="card-body">
-                                    <a href="/certificate/<?= $enrolment->ENROLID ?>" class="btn btn-primary w-100">Certificate</a>
-                                </div>
+                                <?php if ($enrolment->STATUS == "Completed") : ?>
+                                    <div class="card-body">
+                                        <a href="/certificate/<?= $enrolment->ENROLID ?>" class="btn btn-primary w-100">Certificate</a>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -114,7 +127,7 @@ add_shortcode('axcelerate_student', function () {
         </div>
     </div>
 
-    <?php if( $student->CUSTOMFIELD_URLFIELD ) : ?>
+    <?php if ($student->CUSTOMFIELD_URLFIELD) : ?>
         <h2 class="mt-5">Enrolments</h2>
         <div class="row gx-4 gy-4 mt-3">
             <?php foreach ($student->ENROLMENTS as $enrolment) : ?>
@@ -172,8 +185,8 @@ add_shortcode('axcelerate_organisation', function () {
     <div class="row gx-4 gy-4 mt-3 justify-content-center">
         <div class="col-12">
             <div class="card w-100">
-                <?php if($org->HTMLBADGE) : ?>
-                <img src="<?= $org->HTMLBADGE ?>" class="card-img-top" alt="<?= $org->NAME ?>" style=" object-fit: none; 
+                <?php if ($org->HTMLBADGE) : ?>
+                    <img src="<?= $org->HTMLBADGE ?>" class="card-img-top" alt="<?= $org->NAME ?>" style=" object-fit: none; 
                 object-position: center; ">
                 <?php endif; ?>
 
@@ -190,13 +203,13 @@ add_shortcode('axcelerate_organisation', function () {
                 <?php endif; ?>
             </div>
 
-            <?php if( !empty($org->KEYCONTACTS) ) : ?>
+            <?php if (!empty($org->KEYCONTACTS)) : ?>
                 <h2 class="mt-5">Contacts</h2>
 
-                <?php foreach($org->KEYCONTACTS as $k=>$contact) : ?>
+                <?php foreach ($org->KEYCONTACTS as $k => $contact) : ?>
                     <ul class="list-group mb-3">
                         <li class="list-group-item active" aria-current="true">
-                            <?= $contact->GIVENNAME.' '.$contact->SURNAME ?>
+                            <?= $contact->GIVENNAME . ' ' . $contact->SURNAME ?>
                         </li>
                         <li class="list-group-item">EMAIL: <?= $contact->EMAIL ?></li>
                         <li class="list-group-item">POSITION: <?= $contact->POSITION ?></li>
@@ -206,28 +219,28 @@ add_shortcode('axcelerate_organisation', function () {
             <?php endif; ?>
         </div>
     </div>
-    <?php
+<?php
 });
 
 
 
 #   Certificate
-add_shortcode('axcelerate_certificate', function(){
+add_shortcode('axcelerate_certificate', function () {
     $id = get_query_var('certID');
 
-    $certificate = axcelerate_query('contact/enrolment/certificate?enrolID='.$id); ?>
+    $certificate = axcelerate_query('contact/enrolment/certificate?enrolID=' . $id); ?>
 
-    <?php if($certificate->ERROR) : ?>
+    <?php if ($certificate->ERROR) : ?>
         <div class="alert alert-danger" role="alert">
             <?= $certificate->MESSAGES ?>
         </div>
-    <?php elseif($certificate==false) : ?>
+    <?php elseif ($certificate == false) : ?>
         <div class="alert alert-danger" role="alert">
             API connection error!
         </div>
     <?php else : ?>
         <?php
-            dump($certificate);
+        dump($certificate);
         ?>
-    <?php endif;
+<?php endif;
 });

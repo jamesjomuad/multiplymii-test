@@ -78,7 +78,21 @@ function axcelerate_certificate($enrolID)
 
 function axcelerate_students()
 {
-    $data = axcelerate_query('contacts');
+    $params = [
+        'organisation'  => 'Mount Scopus Memorial College',
+        'displayLength' => 30,
+    ];
+
+    // Perform a search
+    if(isset($_GET['keyword'])){
+        $query = "contacts/search?q={$_GET['keyword']}";
+    }
+    else
+    {
+        $query = 'contacts?'.http_build_query($params);
+    }
+    
+    $data = axcelerate_query($query);
 
     return $data;
 }
