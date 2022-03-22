@@ -7,6 +7,8 @@ add_action('init', function(){
     
     $wp->add_query_var('studentID');
     
+    $wp->add_query_var('certID');
+
     $wp->add_query_var('orgID');
 
     add_rewrite_rule(
@@ -16,12 +18,18 @@ add_action('init', function(){
     );
 
     add_rewrite_rule(
+        '^certificate/([^/]*)/?$',
+        'index.php?pagename=certificate&certID=$matches[1]',
+        'top'
+    );
+
+    add_rewrite_rule(
         '^organisation/([^/]*)/?$',
         'index.php?pagename=organisation&orgID=$matches[1]',
         'top'
     );
 
-    $wp_rewrite->flush_rules();
+    // $wp_rewrite->flush_rules();
 });
 
 

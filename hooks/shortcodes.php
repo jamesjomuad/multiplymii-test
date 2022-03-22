@@ -46,7 +46,7 @@ add_shortcode('axcelerate_student', function () {
 ?>
 
     <div class="row gx-4 gy-4 mt-3">
-        <div class="col-12 d-flex flex-fill">
+        <div class="col-4">
             <div class="card w-100">
                 <div class="card-body">
                     <h4 class="card-title"><?= $student->GIVENNAME ?></h4>
@@ -59,7 +59,38 @@ add_shortcode('axcelerate_student', function () {
                 </ul>
             </div>
         </div>
+        <div class="col-8">
+            <?php if( $student->CUSTOMFIELD_URLFIELD ) : ?>
+                <h2 class="mt-5">Enrolments & Certificates</h2>
+                <div class="row gx-3 gy-3 mt-3">
+                    <?php foreach ($student->ENROLMENTS as $enrolment) : ?>
+                        <div class="col-6">
+                            <div class="card w-100 shadow h-100 rounded-3" style="overflow:hidden;">
+                                <div class="card-body bg-primary text-light">
+                                    <h5 class="card-title"><?= $enrolment->NAME ?></h5>
+                                    <p class="card-text"><?= $enrolment->ACTIVITYTYPE ?></p>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item"><b>ID:</b> <?= $enrolment->ENROLID ?></li>
+                                    <li class="list-group-item"><b>Commenced Date:</b> <?= $enrolment->COMMENCEDDATE ?></li>
+                                    <li class="list-group-item"><b>Status:</b> <?= $enrolment->STATUS ?></li>
+                                </ul>
+                                <?php if($enrolment->STATUS=="Completed") : ?>
+                                <div class="card-body">
+                                    <a href="/certificate/<?= $enrolment->ENROLID ?>" class="btn btn-primary w-100">Certificate</a>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else : ?>
+                <h2 class="mt-5">No Enrolments & Certificates</h2>
+            <?php endif; ?>
+        </div>
     </div>
+
+    
 <?php
 });
 
@@ -87,7 +118,6 @@ add_shortcode('axcelerate_organisations', function () {
     </div>
 <?php
 });
-
 
 
 #   Organisations Details
@@ -135,5 +165,25 @@ add_shortcode('axcelerate_organisation', function () {
             <?php endif; ?>
         </div>
     </div>
+    <?php
+});
+
+
+
+#   Certificate
+add_shortcode('axcelerate_certificate', function(){
+    $id = get_query_var('certID');
+
+    $certificate = axcelerate_query('contact/enrolment/certificate?enrolID='.$id);
+
+    dump([
+        'id' => $id,
+        'cert' => $certificate
+    ]); ?>
+
+    <div class="alert alert-danger" role="alert">
+        A simple danger alert—check it out!
+    </div>
+
     <?php
 });
