@@ -21,6 +21,7 @@ add_shortcode('axcelerate_students', function () {
                         <p class="card-text"><?= $contact->COMMENT ?></p>
                     </div>
                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b>ID:</b> <?= $contact->CONTACTID ?></li>
                         <li class="list-group-item"><b>Position:</b> <?= $contact->POSITION ?></li>
                         <li class="list-group-item"><b>Email:</b> <?= $contact->EMAILADDRESS ?></li>
                     </ul>
