@@ -44,9 +44,8 @@ function axcelerate_config()
     return include('config.php');
 }
 
-function axcelerate_students()
+function axcelerate_query($url)
 {
-    // wp_remote_request
     $config = axcelerate_config();
 
     $headers = [
@@ -57,7 +56,7 @@ function axcelerate_students()
     ];
 
     $response = wp_remote_get(
-        'https://stg.axcelerate.com/api/contacts',
+        'https://stg.axcelerate.com/api/' . $url,
         $headers
     );
 
@@ -68,6 +67,39 @@ function axcelerate_students()
     $body = wp_remote_retrieve_body($response);
 
     $data = json_decode($body);
+
+    return $data;
+}
+
+function axcelerate_certificate($enrolID)
+{
+    return axcelerate_query('contact/enrolment/certificate?enrolID='.$enrolID);
+}
+
+function axcelerate_students()
+{
+    $params = [
+        'organisation'  => 'Mount Scopus Memorial College',
+        'displayLength' => 30,
+    ];
+
+    // Perform a search
+    if(isset($_GET['keyword'])){
+        $query = "contacts/search?q={$_GET['keyword']}";
+    }
+    else
+    {
+        $query = 'contacts?'.http_build_query($params);
+    }
+    
+    $data = axcelerate_query($query);
+
+    return $data;
+}
+
+function axcelerate_student($id)
+{
+    $data = axcelerate_query('contact/'.$id);
 
     return $data;
 }

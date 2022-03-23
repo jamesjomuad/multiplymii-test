@@ -3,7 +3,8 @@
     "type": "project",
     "require": {
         "symfony/var-dumper": "^5.4",
-        "nesbot/carbon": "^2.57"
+        "nesbot/carbon": "^2.57",
+        "illuminate/support": "^8.60"
     },
     "authors": [
         {
