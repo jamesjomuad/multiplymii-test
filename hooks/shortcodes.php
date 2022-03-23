@@ -126,25 +126,6 @@ add_shortcode('axcelerate_student', function () {
             <?php endif; ?>
         </div>
     </div>
-
-    <?php if ($student->CUSTOMFIELD_URLFIELD) : ?>
-        <h2 class="mt-5">Enrolments</h2>
-        <div class="row gx-4 gy-4 mt-3">
-            <?php foreach ($student->ENROLMENTS as $enrolment) : ?>
-                <div class="col-4">
-                    <div class="card w-100 shadow h-100">
-                        <div class="card-body">
-                            <h5 class="card-title"><?= $enrolment->NAME ?></h5>
-                            <p class="card-text"><?= $enrolment->ACTIVITYTYPE ?></p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><b>ID:</b> <?= $enrolment->LEARNERID ?></li>
-                        </ul>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
 <?php
 });
 
